@@ -40,12 +40,6 @@ int main()
                                 flag = false;
                             }  
                     }
-                
-                if((std::find(std::begin(whitelist),std::end(whitelist),*iter)==std::end(whitelist)))
-                    {
-                        
-                        
-                    }
             }
         std::stringstream ss(str);
         long long sum=0;

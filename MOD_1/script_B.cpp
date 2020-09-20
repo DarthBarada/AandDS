@@ -2,29 +2,15 @@
 #include <string>
 #include <iterator>
 #include <regex>
+#include <vector>
 
-
-/* Test
-set_size 5
-pop
-push 1
-push 2
-push 3
-push 4
-push 5
-print
-push 6
-pop
-push 6
-print
-*/
-std::regex command_type_1 ("(set_size)"
+std::regex command_type_1 ("(set_size )"
                             "([\\d]+)");
-std::regex command_type_2 ("(push)"
+std::regex command_type_2 ("(push )"
                             "([\\S]+)");
 std::regex command_type_3 ("(pop)");
 std::regex command_type_4 ("(print)");
-
+std::regex command_empty ("([\\s]*)");
 
 class Stack
     {
@@ -119,93 +105,108 @@ public:
 
         void print()
             {
-               for(size_t index = 0u; index <= top; ++index)
+                if (top!=0u)
                     {
-                        std::cout<<array[index]<<" ";   
-                    }
-                std::cout<<"\n";
-            }
-
-        void init(size_t count)
-            {
-                if(array ==nullptr)
-                    {
-                        size = count;
-                        array = new std::string[count];
-                    } 
-            }
-
-    };  
-
-int main()
-    {
-        std::string buffer = "";
-        std::string str = "";
-        size_t matches = 0u;
-        size_t string_counter = 0u;
-        bool is_error = false;
-        std::cmatch result;
-
-        Stack *stack=nullptr;
-
-        std::istreambuf_iterator<char> eos;
-        std::istreambuf_iterator<char> input_data(std::cin.rdbuf());
-
-        // Проходимся по буфферу ввода
-        std::cout<<str;
-        for (auto index = input_data;index!=eos;index++)
-            {
-                if (*index == '\n') // Если получаем конец строки
-                    {
-                        ++string_counter; // Увеличиваем счётчик
-                        if(buffer.empty()) // Если пустая строка
+                        for(size_t index = 0u; index <= top; ++index)
                             {
-                                continue; // Пропускаем
-                            }
-                        if (string_counter == 1) // Если это первая строка, то проверяем только на set_size
-                            {
-                                if(std::regex_match(buffer.c_str(), result, command_type_1))
+                                if (index == 0u)
                                     {
-                                        int size = std::stoi(result[result.size()-1u].str());
-                                        stack = new Stack(size);
+                                        std::cout<<array[index];  
                                     }
                                 else
                                     {
-                                        is_error = true;
-                                        std::cout << "error";
-                                        break; 
-                                    }
-                                buffer.clear();
-                                ++string_counter;
-                                continue;
+                                        std::cout<<" "<<array[index];  
+                                    }           
                             }
-                        if (std::regex_match(buffer.c_str(), result, command_type_1))
-                            {
-                                is_error = true;
-                                std::cout<<"error";
-                            }
-                        if (std::regex_match(buffer.c_str(), result, command_type_2))
-                            {
-                                stack->push(result[result.size()-1u]);
-                            }
-                        if (std::regex_match(buffer.c_str(), result, command_type_3))
-                            {
-                               stack->pop();
-                            }
-                        if (std::regex_match(buffer.c_str(), result, command_type_3))
-                            { 
-                                stack->print();
-                            }
-                        buffer.clear();
                     }
                 else
                     {
-                        if(*index != ' ')
-                            {
-                                buffer += *index; 
-                            }
-                        
+                        std::cout<<"empty";
                     }
+                std::cout<<std::endl;
             }
+    };  
+/*
+*   prepare_commands - Функция для парсинга комманд в вектор
+*/
+void prepare_commands(std::vector<std::string>&vec,std::istreambuf_iterator<char> first,std::istreambuf_iterator<char>last)
+    {
+        std::string buffer="";
+        for (;first!=last;++first)
+                {
+                    if (*first=='\n')
+                        {
+                            vec.push_back(buffer);
+                            buffer.clear();
+                        }
+                    else
+                        {
+                            buffer+=*first;
+                        }
+                }
+    }
+
+int main()
+    {
+        size_t string_counter = 0u;
+        std::cmatch result;
+
+        Stack *stack=nullptr; 
+        bool match = false;
+        std::istreambuf_iterator<char> eos;
+        std::istreambuf_iterator<char> input_data(std::cin);
+
+        std::vector<std::string> commands{};
+
+        // Проходимся по буфферу ввода
+        prepare_commands(commands,input_data,eos);
+
+        for (size_t i=0;i<commands.size();++i)
+            {
+                if (string_counter == 0u) // Если это первая строка, то проверяем только на set_size
+                    {
+                        if(std::regex_match(commands.at(i).c_str(), result, command_type_1))
+                            {
+                                int size = std::stoi(result[result.size()-1u].str());
+                                stack = new Stack(size);
+                                match = true;
+                            }
+                        else
+                            {
+                                std::cout << "error\n"; 
+                            }
+                        ++string_counter;
+                        continue;
+                    }
+                if (std::regex_match(commands.at(i).c_str(), result, command_type_1))
+                    {
+                        std::cout<<"error\n";
+                        continue;
+                    }
+                if (std::regex_match(commands.at(i).c_str(), result, command_type_2))
+                    {
+                        stack->push(result[result.size()-1u]);
+                        continue;
+                    }
+                if (std::regex_match(commands.at(i).c_str(), result, command_type_3))
+                    {
+                         stack->pop();
+                         continue;
+                    }
+                if (std::regex_match(commands.at(i).c_str(), result, command_type_4))
+                    { 
+                         stack->print();
+                         continue;
+                    }
+                if(std::regex_match(commands.at(i).c_str(),result,command_empty)) // Если пустая строка
+                    {
+                        continue; // Пропускаем
+                    }
+                else
+                    {
+                        std::cout<<"error\n";
+                    }     
+            }
+        delete stack;
         return 0;
     }
