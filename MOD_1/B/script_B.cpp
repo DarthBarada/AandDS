@@ -15,61 +15,26 @@ std::regex command_empty ("([\\s]*)");
 class Stack
     {
         std::string *array = nullptr;
-        size_t size = 0u;
-        size_t top = 0u;
+        int size = 0;
+        int top = 0;
 public:
-        Stack(const Stack &obj)
-            {
-                size = obj.size;
-                
-                delete[] array;
-                array = obj.array;
-            }
-        Stack(Stack &&obj)
-            {
-                size = obj.size;
-                obj.size = 0u;
-                
-                delete[] array;
-                array = obj.array;
-                obj.array = nullptr;   
-            }
-        Stack& operator=(Stack &&obj)
-            {
-                size = obj.size;
-                obj.size = 0u;
-                
-                delete[] array;
-                array = obj.array;
-                obj.array = nullptr; 
-
-                return *this;
-            }
-
-        Stack& operator=(const Stack &obj)
-            {
-                size = obj.size;
-                delete[] array;
-                array = obj.array;  
-
-                return *this; 
-            }
-
-        Stack(size_t temp)
-            {
-                size = temp;
-                array = new std::string[temp];
-            }
-
         Stack(int temp)
             {
-                size = abs(temp);
-                array = new std::string[size];
+                if (temp > 0)
+                    {
+                        size = temp;
+                        array = new std::string[temp];
+                    }
+                else
+                    {
+                        std::cout << "error\n";
+                    }       
             }
 
         ~Stack()
             {
-                size = 0u;  
+                size = 0;  
+                top = 0;
                 if(array != nullptr)
                     {
                         delete[] array;
@@ -79,7 +44,7 @@ public:
 
         void push(std::string str)
             {
-                if(top + 1u > size)
+                if(top + 1 > size)
                     {
                         std::cout<<"overflow\n";
                     }
@@ -92,7 +57,7 @@ public:
 
         void pop()
             {
-                if(top == 0u)
+                if(top == 0)
                     {
                         std::cout<<"underflow\n";
                     }   
@@ -105,18 +70,11 @@ public:
 
         void print()
             {
-                if (top!=0u)
+                if (top!=0)
                     {
-                        for(size_t index = 0u; index <= top; ++index)
+                        for(int index = 0; index < top; index++)
                             {
-                                if (index == 0u)
-                                    {
-                                        std::cout<<array[index];  
-                                    }
-                                else
-                                    {
-                                        std::cout<<" "<<array[index];  
-                                    }           
+                                std::cout << array[index]<<" ";        
                             }
                     }
                 else
@@ -152,7 +110,6 @@ int main()
         std::cmatch result;
 
         Stack *stack=nullptr; 
-        bool match = false;
         std::istreambuf_iterator<char> eos;
         std::istreambuf_iterator<char> input_data(std::cin);
 
@@ -167,9 +124,7 @@ int main()
                     {
                         if(std::regex_match(commands.at(i).c_str(), result, command_type_1))
                             {
-                                int size = std::stoi(result[result.size()-1u].str());
-                                stack = new Stack(size);
-                                match = true;
+                                stack = new Stack(std::stoi(result[result.size()-1u].str()));
                             }
                         else
                             {

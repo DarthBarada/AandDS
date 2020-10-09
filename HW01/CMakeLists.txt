@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.15)
-project(lab_01)
+cmake_minimum_required(VERSION 3.4)
 
-set(CMAKE_CXX_STANDARD 17)
+project(homework_1)
 
-add_executable(lab_01 main.cpp)
+add_subdirectory(fibbonachi_logn ${CMAKE_CURRENT_SOURCE_DIR}/fibbonachi_logn)
+add_subdirectory(fast_power ${CMAKE_CURRENT_SOURCE_DIR}/fast_power)
