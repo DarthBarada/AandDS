@@ -31,6 +31,6 @@ target_link_libraries(
     ${SOURCES}
 )
 enable_testing()
-add_test(NAME unit_tests COMMAND tests)
+add_test(NAME unit_tests COMMAND tests_power)
 
 endif()

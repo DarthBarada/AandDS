@@ -39,3 +39,6 @@
 cmake_install.cmake
 Makefile
 CTestTestfile.cmake
+
+tests_fibbonachi
+tests_power
