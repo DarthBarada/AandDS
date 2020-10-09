@@ -2,4 +2,4 @@
 
 set -ex
 
-cmake -H. -B .build -DBUILD_MAIN=On
+cmake -H. -B .build

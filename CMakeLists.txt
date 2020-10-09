@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.8)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_MAIN "Build main" OFF)
 option(BUILD_COVERAGE "Build coverage" OFF)
 option(BUILD_TESTS "Build tests" OFF)
 
@@ -38,3 +37,12 @@ add_test(NAME tests_fibbonachi COMMAND tests_fibbonachi)
 add_test(NAME tests_power COMMAND tests_power)
 
 endif()
+
+if (BUILD_COVERAGE)
+  set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  find_package(codecov)
+  add_coverage(tests)
+  list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
+  coverage_evaluate()
+endif ()
