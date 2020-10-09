@@ -30,3 +30,11 @@ endif()
 if (BUILD_HW1)
     add_subdirectory(HW01 ${CMAKE_CURRENT_SOURCE_DIR}/HW01)
 endif()
+
+if(BUILD_TESTS)
+enable_testing()
+
+add_test(NAME tests_fibbonachi COMMAND tests_fibbonachi)
+add_test(NAME tests_power COMMAND tests_power)
+
+endif()

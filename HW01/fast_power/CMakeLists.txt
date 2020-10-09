@@ -30,7 +30,5 @@ target_link_libraries(
     GTest::gtest_main
     ${SOURCES}
 )
-enable_testing()
-add_test(NAME tests_power COMMAND tests_power)
 
 endif()

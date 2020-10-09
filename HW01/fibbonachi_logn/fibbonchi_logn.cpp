@@ -18,9 +18,15 @@ void Fibbonachi::calculate()
         else if (n == 1 || n == 2)
             res = 1;
         else if (n < 0)
-            res = ((-1)^n) * calculate(std::abs(n));
-
-        res = matpow(Q,n-1).at(0).at(0);
+            {
+                if(std::abs(n)%2 == 0)
+                    res = -1 * calculate(std::abs(n));
+                else
+                    res = calculate(std::abs(n));
+            }
+            
+        else
+            res = matpow(Q,n-1).at(0).at(0);
     }
 
 long long Fibbonachi::calculate(long long number)
@@ -38,12 +44,12 @@ long long Fibbonachi::calculate(long long number)
 // Функция возведения квадратной матрицы 2х2 в степень n
 std::vector<std::vector<long long>> Fibbonachi::matpow(std::vector<std::vector<long long>> matrix, unsigned long long num)
     {
-        if (num == 0)
-            return {{1,0},{0,1}};
-        else if (num == 1)
+        if (num == 0ull)
+            return {{1ll,0ll},{0ll,1ll}};
+        else if (num == 1ull)
             return matrix;
         
-        std::vector<std::vector<long long>> _res = {{1,0},{0,1}};
+        std::vector<std::vector<long long>> _res = {{1ll,0ll},{0ll,1ll}};
         std::string bin_n = ulltosbin(num);
 
         for (int index = 0; index + 1 < int(bin_n.size()); ++index)

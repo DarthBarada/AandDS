@@ -26,7 +26,5 @@ target_link_libraries(
     GTest::gtest_main
     ${SOURCES}
 )
-enable_testing()
-add_test(NAME tests_fibbonachi COMMAND tests_fibbonachi)
 
 endif()
